@@ -284,22 +284,5 @@ in I_m$
  成立.
 \end_layout
 
-\begin_layout Standard
-于是，对于ReLU网络，我们可以构造：
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-$ 
-\backslash
-varphi_{c,d}(x)=ReLU(x-c)-ReLU(x-d), (c<d)$
-\end_layout
-
-\end_inset
-
- , 
-\end_layout
-
 \end_body
 \end_document
