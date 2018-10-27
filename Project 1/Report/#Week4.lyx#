@@ -281,11 +281,26 @@ in I_m$
 
 \end_inset
 
- 成立.
+ 成立。
 \end_layout
 
 \begin_layout Standard
-于是，对于ReLU网络，我们可以构造：
+注意到单独的一层ReLU网络，ReLU函数并不满足
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$
+\backslash
+varphi(
+\backslash
+cdot)$
+\end_layout
+
+\end_inset
+
+是一个有界且连续的单调上升函数的条件。于是，对于ReLU网络，我们可以构造：
 \begin_inset ERT
 status open
 
@@ -293,12 +308,39 @@ status open
 
 $ 
 \backslash
-varphi_{c,d}(x)=ReLU(x-c)-ReLU(x-d), (c<d)$
+varphi '(x)=ReLU(x-a)-ReLU(x-b),(a < b)$
 \end_layout
 
 \end_inset
 
- , 
+ , 可以发现
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$ 
+\backslash
+varphi '(x)_{lim 
+\backslash
+to -
+\backslash
+infinity}= 0, 
+\backslash
+varphi '(x)_{lim 
+\backslash
+to + 
+\backslash
+infinity}= lim 
+\backslash
+to  + 
+\backslash
+infinity [(x-a) - (x-b)] = $
+\end_layout
+
+\end_inset
+
+ 
 \end_layout
 
 \end_body
