@@ -137,7 +137,7 @@ Linyang He (15307130240)
 \end_layout
 
 \begin_layout Standard
-理论和实验证明，一个两层的ReLU网络可以模拟任何函数。请自行定义一个函数, 并使用基于ReLU的神经网络来拟合此函数。
+理论和实验证明,一个两层的ReLU网络可以模拟任何函数.请自行定义一个函数, 并使用基于ReLU的神经网络来拟合此函数.
 \end_layout
 
 \begin_layout Section
@@ -145,28 +145,29 @@ Linyang He (15307130240)
 \end_layout
 
 \begin_layout Standard
-问题中的描述并不准确。首先，“模拟”一词含义也不清晰，笔者默认为问题的意思是“拟合”。此外，一个两层的ReLU网络并不能“模拟”任何函数。 根据Hornik
- et al., 1989， 我们注意到原文中提到：This paper rigorously establishes that standard
- multilayer feedforward networks with as few as one hidden layer using using
- arbitrary squashing functions are capable of approximating any 
+问题中的描述并不准确.首先,“模拟”一词含义也不清晰,笔者默认为问题的意思是“拟合”.此外,一个两层的ReLU网络并不能“模拟”任何函数.
+ 根据Hornik et al., 1989, 我们注意到原文中提到：“This paper rigorously establishes that
+ standard multilayer feedforward networks with as few as one hidden layer
+ using using arbitrary squashing functions are capable of approximating
+ any 
 \series bold
 Borel measurable
 \series default
  function from one finite dimensional space to another to any desired degree
- of accuracy, provided sufficiently many hidden units are available.
- 可见并不是所有的函数都是可以approximate的，而只是对博雷尔可测（Borel measurable）函数。于是我们将问题修改为：
+ of accuracy, provided sufficiently many hidden units are available.” 可见并不是所有的函数都
+是可以approximate的,而只是对博雷尔可测（Borel measurable）函数.于是我们将问题修改为：
 \series bold
 一个两层的ReLU网络可以拟合任何博雷尔可测函数
 \series default
-。
+.
 \end_layout
 
 \begin_layout Standard
-根据Universal Approximator Theorem，我们有：
+根据Universal Approximator Theorem,我们有：
 \end_layout
 
-\begin_layout Standard
-令 
+\begin_layout Description
+定理 
 \begin_inset ERT
 status open
 
@@ -181,7 +182,7 @@ cdot)$
 
 \end_inset
 
-是一个有界且连续的单调上升函数，且
+是一个有界且连续的单调上升函数,且
 \begin_inset ERT
 status open
 
@@ -196,7 +197,7 @@ cdot)$
 
 \end_inset
 
-不恒为常数，令 
+不恒为常数,令 
 \begin_inset Formula $I_{m}$
 \end_inset
 
@@ -211,7 +212,7 @@ $R^m$
 
 \end_inset
 
- 的一个紧子集，那么对于
+ 的一个紧子集,那么
 \begin_inset ERT
 status open
 
@@ -227,11 +228,9 @@ in C(I_m),
 \backslash
 exists N 
 \backslash
-in N 和 v_i, b_i 
+in N,v_i, b_i 
 \backslash
-in 
-\backslash
-Bbb R, w_i 
+in R, w_i 
 \backslash
 in  R^m,(i=1,2,...,N)$
 \end_layout
@@ -281,11 +280,11 @@ in I_m$
 
 \end_inset
 
- 成立。
+ 成立.
 \end_layout
 
 \begin_layout Standard
-注意到单独的一层ReLU网络，ReLU函数并不满足
+注意到对于单独的一层ReLU网络,ReLU函数并不满足
 \begin_inset ERT
 status open
 
@@ -300,47 +299,228 @@ cdot)$
 
 \end_inset
 
-是一个有界且连续的单调上升函数的条件。于是，对于ReLU网络，我们可以构造：
+是一个有界且连续的单调上升函数的条件.于是,对于ReLU网络,我们可以构造：
 \begin_inset ERT
 status open
 
 \begin_layout Plain Layout
 
-$ 
+$$ 
 \backslash
-varphi '(x)=ReLU(x-a)-ReLU(x-b),(a < b)$
+varphi '(x)=ReLU(x-a)-ReLU(x-b),(a < b)$$
 \end_layout
 
 \end_inset
 
- , 可以发现
+ 可以发现
 \begin_inset ERT
 status open
 
 \begin_layout Plain Layout
 
-$ 
+$
 \backslash
-varphi '(x)_{lim 
+mathop{
 \backslash
-to -
+varphi '(x)}
 \backslash
-infinity}= 0, 
+limits_{x
 \backslash
-varphi '(x)_{lim 
+to-
 \backslash
-to + 
+infty} = 0,    
 \backslash
-infinity}= lim 
+mathop{
 \backslash
-to  + 
+varphi '(x)}
 \backslash
-infinity [(x-a) - (x-b)] = $
+limits_{x
+\backslash
+to+
+\backslash
+infty}= 
+\backslash
+mathop{lim}
+\backslash
+limits_{x
+\backslash
+to+
+\backslash
+infty}   [(x-a) - (x-b)] = b-a .$
 \end_layout
 
 \end_inset
 
+此时, 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$
+\backslash
+varphi'$
+\end_layout
+
+\end_inset
+
+有界、连续且单调,满足Universal Approximator Theorem.于是我们可以定义：
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+ $F(x)=
+\backslash
+sum_{i=1}^{N}v_i
+\backslash
+varphi'(w_i^Tx + b_i)$
+\end_layout
+
+\end_inset
+
+ , 满足 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$|F(x)-f(x)|<
+\backslash
+varepsilon$
+\end_layout
+
+\end_inset
+
+ 对
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$
+\backslash
+forall x 
+\backslash
+in I_m$
+\end_layout
+
+\end_inset
+
+ 成立.
  
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$
+\backslash
+varphi'$
+\end_layout
+
+\end_inset
+
+是两个ReLU函数的线性组合,可以通过两层的ReLU网络构造,这样就证明了
+\series bold
+一个两层的ReLU网络可以拟合任何博雷尔可测函数
+\series default
+.
+ 
+\end_layout
+
+\begin_layout Section
+实现
+\end_layout
+
+\begin_layout Subsection
+函数定义
+\end_layout
+
+\begin_layout Standard
+我们以一个实际的一元二次函数为例子.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$$y = 2x^2 + 3x,x 
+\backslash
+in R$$
+\end_layout
+
+\end_inset
+
+在构建函数的时候,我们可以用[-10,10]上的均匀分布的500个点来表示.同时这也是我们的训练集.对于测试集,我们另取[-10,10]上随机分布的100个点.
+\end_layout
+
+\begin_layout Subsection
+模型表述
+\end_layout
+
+\begin_layout Standard
+对于神经网络模型,我们构造了两层hidden layer激活函数均是ReLU的网络.输入层1个节点（x）,第一层隐藏层5个节点,第二层隐藏层10个节点,输出层1个
+节点（y）.此外,对于网络的optimizer,我们选用了随机梯度下降（SGD）,learning rate为0.0001.
+ 损失函数选取的是均方差MSE.神经网络下图所示.
+\end_layout
+
+\begin_layout Subsection
+拟合效果
+\end_layout
+
+\begin_layout Standard
+在训练中，为了提升训练速度，我们定义相对误差(Relative Error)为：
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$$RelError = 
+\backslash
+dfrac{MSE}{||y||^2}$$
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Relative error for training set is 1.27e-06.而Relative error for test set is
+ 4.63e-06.可以看出,神经网络确实很好的拟合了
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$y = 2x^2 + 3x$
+\end_layout
+
+\end_inset
+
+这个函数.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename fig.png
+	scale 65
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename fig1.png
+	scale 45
+
+\end_inset
+
+
 \end_layout
 
 \end_body

@@ -167,7 +167,7 @@ Borel measurable
 \end_layout
 
 \begin_layout Description
-令 
+定理 
 \begin_inset ERT
 status open
 
@@ -427,6 +427,129 @@ varphi'$
 \series default
 .
  
+\end_layout
+
+\begin_layout Section
+实现
+\end_layout
+
+\begin_layout Subsection
+函数定义
+\end_layout
+
+\begin_layout Standard
+我们以一个实际的一元二次函数为例子.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$$y = 2x^2 + 3x,x 
+\backslash
+in R$$
+\end_layout
+
+\end_inset
+
+在构建函数的时候,我们可以用[-10,10]上的均匀分布的500个点来表示.同时这也是我们的训练集.对于测试集,我们另取[-10,10]上随机分布的100个点.
+\end_layout
+
+\begin_layout Subsection
+模型表述
+\end_layout
+
+\begin_layout Standard
+对于神经网络模型,我们构造了两层hidden layer激活函数均是ReLU的网络.输入层1个节点（x）,第一层隐藏层5个节点,第二层隐藏层10个节点,输出层1个
+节点（y）.此外,对于网络的optimizer,我们选用了随机梯度下降（SGD）,learning rate为0.0001.
+ 损失函数选取的是均方差MSE.神经网络下图所示.
+\end_layout
+
+\begin_layout Subsection
+拟合效果
+\end_layout
+
+\begin_layout Standard
+对于训练好的网络，我们发现，对于测试集相对误差（下文会提到）Relative error为9.95e-07.而对于测试集Relative error是4.79e-06.
+ 神经网络在测试集表现地非常好，从数据和图中都可以看出,神经网络确实很好的拟合了
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$y = 2x^2 + 3x$
+\end_layout
+
+\end_inset
+
+这个函数.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename fig.png
+	scale 65
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename fig1.png
+	scale 45
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+实验分析
+\end_layout
+
+\begin_layout Standard
+对于隐藏层结点个书的选择，我们根据经验公式：
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$$h = 
+\backslash
+sqrt{m+n} + a$$
+\end_layout
+
+\end_inset
+
+这里，h为隐藏层节点个数，m为输入层节点个数，n为输出层节点个数，a为1-10的常数。这样，我们的10和5的节点数是较为合理的。
+\end_layout
+
+\begin_layout Standard
+在训练中，为了提升训练速度，我们希望在loss值变化非常小的时候（意味着几乎到达了最优点），能够提早结束训练。考虑到归一化的原因，我们定义相对误差(Relati
+ve Error)为：
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$$RelError = 
+\backslash
+dfrac{MSE}{||y||^2} = 
+\backslash
+dfrac{
+\backslash
+frac{1}{n}∑_{i=1}(y_i−
+\backslash
+hat{y_i})2}{||y||^2}$$
+\end_layout
+
+\end_inset
+
+且规定当相对误差小于1e-6的时候，训练提早结束。实验发现，对于原本20000步epochs的训练，可以在第10356次迭代时后结束训练，极大地提升了神经网络的
+效率。
 \end_layout
 
 \end_body

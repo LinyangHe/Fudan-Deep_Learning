@@ -69,7 +69,7 @@ Training stage
 '''
 
 #Define a neural network
-mynet = NN(1, 10, 5, 1)
+mynet = NN(1, 5, 10, 1)
 #Print the network structure information
 print('Network structure:\n',mynet)
 
@@ -77,7 +77,7 @@ print('Network structure:\n',mynet)
 x, y, x_test, y_test = data_create()
 
 #Train the neural network
-mynet.train(x, y, 10000)
+mynet.train(x, y, 20000)
 #Compute the prediction
 prediction = mynet(x)
 #Compute the loss based on the function we used when we train the model
