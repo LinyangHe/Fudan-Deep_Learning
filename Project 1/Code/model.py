@@ -21,7 +21,6 @@ class NN(nn.Module):
 
 mynet = NN(1, 5, 5, 1)
 
-
 print(mynet)
 
 def data_create():
@@ -29,3 +28,5 @@ def data_create():
     y = x.pow(2) + 0.2*torch.rand(x.size())
     x, y = Variable(x, requires_grad=False), Variable(y, requires_grad=False)
     return x, y
+
+x, y = data_create()
