@@ -50,39 +50,37 @@ class NN(nn.Module):
             #If the relative errror is less than 1e-6, then finish the training
             if loss / y_norm_cube < 1e-6:
                 break
+            #Track the training information
             if i % 1000 == 0:
-                print(i,loss)
+                print(i, loss)
         #Print the iterations
         print('Iterations: ',i)
 
-#Create training data and test data.
+#Define different functions
 def func1(x):
     y = 2*x.pow(2) + 3*x + 0.2*torch.rand(x.size())
     return y
-
 def func2(x):
     y = np.sin(x) + 0.01*torch.rand(x.size())
     return y
-
 def func3(x):
-    y = np.log(x)
+    y = np.log(x) + 0.01*torch.rand(x.size())
     return y
-
 def func4(x):
-    y = np.exp(x)
+    y = np.exp(x) + 0.01*torch.rand(x.size())
     return y
 
+#Create training data and test data.
 def data_create():
     #the unsqueeze function turn the vector into a matrix. 
-    # x = torch.unsqueeze(torch.linspace(-10, 10, 500), 1)
-    x = torch.unsqueeze(torch.linspace(0.5, 7, 500), 1)
+    x = torch.unsqueeze(torch.linspace(-10, 10, 500), 1)
+    # x = torch.unsqueeze(torch.linspace(0.0001, 1, 500), 1)
+    y = func1(x)
 
-    y = func3(x)
-
-    # x_test = torch.from_numpy(np.random.uniform(-10, 10, 100))
-    x_test = torch.from_numpy(np.random.uniform(0.5, 7, 100))    
+    x_test = torch.from_numpy(np.random.uniform(-10, 10, 100))
+    # x_test = torch.from_numpy(np.random.uniform(0.0001, 1, 100))    
     x_test = torch.unsqueeze(x_test, 1).float()
-    y_test = func3(x_test)
+    y_test = func1(x_test)
 
     return x, y, x_test, y_test
 

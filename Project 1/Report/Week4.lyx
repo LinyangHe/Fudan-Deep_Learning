@@ -492,7 +492,7 @@ $y = 2x^2 + 3x$
 \align center
 \begin_inset Graphics
 	filename fig.png
-	scale 65
+	scale 60
 
 \end_inset
 
@@ -501,7 +501,6 @@ $y = 2x^2 + 3x$
 
 \begin_layout Standard
 \align center
-4.79e-06
 \begin_inset Graphics
 	filename fig1.png
 	scale 45
@@ -642,7 +641,7 @@ status open
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $y=2x^{2}+3x$
+\begin_inset Formula $y=2x^{2}+3x\text{, }x\in[-10,10]$
 \end_inset
 
 
@@ -683,7 +682,7 @@ status open
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $y=sin(x)$
+\begin_inset Formula $y=sin(x),x\in[-3,3]$
 \end_inset
 
 
@@ -724,7 +723,7 @@ status open
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $y=e^{x}$
+\begin_inset Formula $y=e^{x},x\in[-1,6]$
 \end_inset
 
 
@@ -765,7 +764,7 @@ status open
 \begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $y=lnx$
+\begin_inset Formula $y=lnx,x\in(0,1]$
 \end_inset
 
 
@@ -777,7 +776,7 @@ status open
 \begin_inset Text
 
 \begin_layout Plain Layout
-
+500000
 \end_layout
 
 \end_inset
@@ -786,7 +785,7 @@ status open
 \begin_inset Text
 
 \begin_layout Plain Layout
-
+3.89e-05
 \end_layout
 
 \end_inset
@@ -802,6 +801,69 @@ status open
 \begin_layout Plain Layout
 
 \end_layout
+
+\end_inset
+
+我们发现，三角函数比较难学习的，迭代次数高达500000后测试集相对误差仍然高。主要的原因是在所取的定义域上，三角函数形状较为复杂。而对数函数较难以拟合的部分主
+要是接近在
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$x
+\backslash
+to0$
+\end_layout
+
+\end_inset
+
+时，
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$y
+\backslash
+to-
+\backslash
+infty$
+\end_layout
+
+\end_inset
+
+的时候，此时loss总会很大。当然，我们也可以预见，对于高次、图像复杂的多项式函数，神经网络拟合也较为困难。下图是一些神经网络拟合函数的图示。注意在Python
+代码中，默认以多项式函数为主。
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename fig3.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename fig4.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename fig5.png
+	scale 50
 
 \end_inset
 
