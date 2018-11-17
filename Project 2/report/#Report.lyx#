@@ -170,7 +170,7 @@ n_state信息作为这个时序的输入，这样，就实现了不同时序上�
 \align center
 \begin_inset Graphics
 	filename fig2.png
-	scale 30
+	scale 25
 
 \end_inset
 
@@ -274,7 +274,7 @@ New memory cell
 \align center
 \begin_inset Graphics
 	filename fig3.png
-	scale 65
+	scale 60
 
 \end_inset
 
@@ -282,18 +282,193 @@ New memory cell
 \end_layout
 
 \begin_layout Standard
-此时，LSTM Unit的示意图为下图，从左至右分别为
+此时，LSTM Unit的示意图为下图，从左至右分别为Input gate, forget, new memory cell, 以及output。
 \end_layout
 
 \begin_layout Standard
 \align center
 \begin_inset Graphics
 	filename fig4.png
+	scale 45
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+noindent
+\end_layout
+
+\end_inset
+
+ 因此，最后的两个输出分别为：
+\end_layout
+
+\begin_layout Enumerate
+Final memory cell（位于上方的）
+\end_layout
+
+\begin_layout Enumerate
+Final hidden state （位于下方和h_t).
+\end_layout
+
+\begin_layout Standard
+对应的公式分别为：
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename fig5.png
 	scale 50
 
 \end_inset
 
 
+\end_layout
+
+\begin_layout Subsection
+GRU
+\end_layout
+
+\begin_layout Standard
+门控循环单元（Gated Recurrent Unit，GRU）网络是一种比LSTM网络更加简单的循环神经网络。与LSTM类似，都是在RNN上增加了不同的门控产
+生的高级的RNN。在LSTM网络中，输入门和遗忘门是互补关系，用两个门比较冗余。GRU将输 入门与和遗忘门合并成一个门：更新门。同时，GRU也不引入额外的记忆单
+元， 直接在当前状态
+\begin_inset Formula $h_{t}$
+\end_inset
+
+ 和历史状态
+\begin_inset Formula $h_{t-1}$
+\end_inset
+
+ 之间引入线性依赖关系。GRU有三个门：
+\end_layout
+
+\begin_layout Enumerate
+Update gate
+\end_layout
+
+\begin_layout Enumerate
+Reset Gate
+\end_layout
+
+\begin_layout Enumerate
+New memory content.
+\end_layout
+
+\begin_layout Standard
+三个门控分别对应的输出是：
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename fig6.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+这样，我们得到新的
+\begin_inset Formula $h_{t}$
+\end_inset
+
+是：
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename fig7.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+GRU的图示：
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename fig8.png
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Experiment
+\end_layout
+
+\begin_layout Subsection
+Language Model
+\end_layout
+
+\begin_layout Standard
+语言模型是生成唐诗的重要背景知识。实际上，唐诗能写成，本质上就是利用RNN网络训练了一个基于唐诗语料库的语言模型。如果把语料库换成其他的歌词，也就可以写成其他风
+格的诗作了。这里简要介绍一下语言模型。统计语言模型是一个单词序列上的概率分布，对于一个给定长度为m的序列，它可以为整个序列产生一个概率 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$P(w_1,w_2,…,w_m)$ 
+\end_layout
+
+\end_inset
+
+。理论上我们需要根据一句话中所有的历史词汇来计算当前词汇的概率，但是这样计算太过复杂。通常，我们根据马尔可夫性假设当前词的概率与前面的n个词有关系。于是，语言模
+型：
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename fig9.png
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+可以看到，我们实际中在应用统计语言模型的时候，只能根据前n个词汇来计算，过长的依赖就不能得到解决。而这也正是RNN神经语言模型能够解决的问题。只需要把上面提到的
+各种RNN模型的输入变成语料库中的lexicon序列，训练这个模型便可以得到神经语言模型了。
+\end_layout
+
+\begin_layout Subsection
+Peom Generation
+\end_layout
+
+\begin_layout Standard
+本文使用的是tensorflow版本的代码，这里分析一下各个函数的作用，以此来说明唐诗生成的过程。
+\end_layout
+
+\begin_layout Subsubsection
+数据预处理部分
+\end_layout
+
+\begin_layout Standard
+经过对函数process_poems的分析，我们可以得处三个返回值poems_vector, word_int_map, words分别是存这
 \end_layout
 
 \end_body

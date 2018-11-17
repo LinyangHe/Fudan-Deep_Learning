@@ -170,7 +170,7 @@ n_state信息作为这个时序的输入，这样，就实现了不同时序上�
 \align center
 \begin_inset Graphics
 	filename fig2.png
-	scale 30
+	scale 25
 
 \end_inset
 
@@ -328,7 +328,7 @@ Final hidden state （位于下方和h_t).
 \align center
 \begin_inset Graphics
 	filename fig5.png
-	scale 60
+	scale 50
 
 \end_inset
 
@@ -397,6 +397,78 @@ New memory content.
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+GRU的图示：
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename fig8.png
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Experiment
+\end_layout
+
+\begin_layout Subsection
+Language Model
+\end_layout
+
+\begin_layout Standard
+语言模型是生成唐诗的重要背景知识。实际上，唐诗能写成，本质上就是利用RNN网络训练了一个基于唐诗语料库的语言模型。如果把语料库换成其他的歌词，也就可以写成其他风
+格的诗作了。这里简要介绍一下语言模型。统计语言模型是一个单词序列上的概率分布，对于一个给定长度为m的序列，它可以为整个序列产生一个概率 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$P(w_1,w_2,…,w_m)$ 
+\end_layout
+
+\end_inset
+
+。理论上我们需要根据一句话中所有的历史词汇来计算当前词汇的概率，但是这样计算太过复杂。通常，我们根据马尔可夫性假设当前词的概率与前面的n个词有关系。于是，语言模
+型：
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename fig9.png
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+可以看到，我们实际中在应用统计语言模型的时候，只能根据前n个词汇来计算，过长的依赖就不能得到解决。而这也正是RNN神经语言模型能够解决的问题。只需要把上面提到的
+各种RNN模型的输入变成语料库中的lexicon序列，训练这个模型便可以得到神经语言模型了。
+\end_layout
+
+\begin_layout Subsection
+Peom Generation
+\end_layout
+
+\begin_layout Standard
+本文使用的是tensorflow版本的代码，这里分析一下各个函数的作用，以此来说明唐诗生成的过程。
+\end_layout
+
+\begin_layout Subsubsection
+数据预处理部分
+\end_layout
+
+\begin_layout Standard
+经过对函数process_poems的分析，我们可以得处三个返回值poems_vector, word_int_map, words分别是
 \end_layout
 
 \end_body
