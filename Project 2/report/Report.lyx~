@@ -125,38 +125,254 @@
 \begin_body
 
 \begin_layout Title
-用LSTM网络模型写唐诗
+用RNN网络模型写唐诗
 \end_layout
 
 \begin_layout Author
 Linyang He
 \end_layout
 
+\begin_layout Standard
+本文以写唐诗这个情景为例，重点关注了RNN模型（以及LSTM,GRU模型）在时间序列问题上的应用。本文先会讲述各个RNN模型，再描述了唐诗生成的过程。接着展示了
+以“日 、 红 、 山 、 夜 、 湖、 海 、 月”等字为首字的诗歌。最后是实验的总结，并提出了一些自己的思考。
+\end_layout
+
 \begin_layout Section
 Background
 \end_layout
 
-\begin_layout Standard
-问题：Python编程实现灰度直方图均衡化算法（不能调用某个算法库里面的函数），并应用该算法在某个图片上，显示对比与原图的差别（提示：显示对比可以用两个图相减后
-的结果图，注意调节对比度范围，显示出差别）。 
+\begin_layout Subsection
+RNN
 \end_layout
 
 \begin_layout Standard
-解答：
-\end_layout
-
-\begin_layout Standard
-下面是一张灰度图（三国杀主题）采用算法前后的图片的示意图。
-\end_layout
-
-\begin_layout Standard
-可以发现，采用算法后，灰度值更均衡，对比度更高。
+当我们在理解一句话意思时，孤立的理解这句话的每个词是不够的，我们需要处理这些词连接起来的整个序列。为了解决一些这样类似的问题，能够更好的处理序列的信息，RNN就
+诞生了。递归神经网络（Recurrent Neural Networks，RNN）对于时序信息的处理有着天然的优异性。RNN的特点在于，会把上个时序的hidde
+n_state信息作为这个时序的输入，这样，就实现了不同时序上的信息的沟通。下图是一个单独的RNN Unit示意图。
 \end_layout
 
 \begin_layout Standard
 \align center
 \begin_inset Graphics
-	filename pasted2.png
+	filename fig1.png
+	scale 20
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+可以发现，隐藏层中间有个w在循环的输入输出，这便是hidden_state。如果展开来看，可以得到如下图像，这也是平时我们常见的RNN图像。
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename fig2.png
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+具体而言，假设在时刻
+\begin_inset Formula $t$
+\end_inset
+
+时，网络的输入为
+\begin_inset Formula $x_{t}$
+\end_inset
+
+，隐层状态（即隐层神经元活性值）为
+\begin_inset Formula $h_{t}$
+\end_inset
+
+ 不仅和当前时刻的输入
+\begin_inset Formula $x_{t}$
+\end_inset
+
+ 相关，也和上一个时刻的隐层状态
+\begin_inset Formula $h_{t-1}$
+\end_inset
+
+ 相关。 
+\begin_inset Formula $f(·)$
+\end_inset
+
+是非线性激活函数，通常为logistic函数或tanh 函数，
+\begin_inset Formula $U$
+\end_inset
+
+ 为状态-状态权重矩阵，
+\begin_inset Formula $W$
+\end_inset
+
+ 为状态-输入权重矩阵, 那么，RNN的运算逻辑通常可以表示成：
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$$h_t = f(Wx_t + Uh_{t−1})$$
+\end_layout
+
+\end_inset
+
+.
+ 总之，链式的特征揭示了 RNN 本质上是与序列和列表相关的。他们是对于这类数据的最自然的神经网络架构。
+\end_layout
+
+\begin_layout Subsection
+LSTM
+\end_layout
+
+\begin_layout Standard
+RNN 的关键点之一就是他们可以用来连接先前的信息到当前的任务上，例如使用过去的视频段来推测对当前段的理解。如果 RNN 可以做到这个，他们就变得非常有用。但是
+真的可以么？答案是，还有很多依赖因素。 有时候，我们仅仅需要知道先前的信息来执行当前的任务。例如，我们有一个语言模型用来基于先前的词来预测下一个词。如果我们试着
+预测 “the clouds are in the sky” 最后的词，我们并不需要任何其他的上下文 —— 因此下一个词很显然就应该是 sky。在这样的场景中，
+相关的信息和预测的词位置之间的间隔是非常小的，RNN 可以学会使用先前的信息。
+\end_layout
+
+\begin_layout Standard
+但是同样会有一些更加复杂的场景。假设我们试着去预测“I grew up in France...
+ I speak fluent French”最后的词。当前的信息建议下一个词可能是一种语言的名字，但是如果我们需要弄清楚是什么语言，我们是需要先前提到的离当前
+位置很远的 France 的上下文的。这说明相关信息和当前预测位置之间的间隔就肯定变得相当的大。 不幸的是，在这个间隔不断增大时，RNN 会丧失学习到连接如此远
+的信息的能力。在理论上，RNN 绝对可以处理这样的 长期依赖 问题。人们可以仔细挑选参数来解决这类问题中的最初级形式，但在实践中，RNN 肯定不能够成功学习到这
+些知识。Bengio, et al.
+ (1994)等人对该问题进行了深入的研究，他们发现一些使训练 RNN 变得非常困难的相当根本的原因。 然而，幸运的是，LSTM 并没有这个问题。
+\end_layout
+
+\begin_layout Standard
+LSTM是一种 RNN 特殊的类型，可以学习长期依赖信息。LSTM 通过刻意的设计来避免长期依赖问题。不同于普通RNN的单一神经网络层，LSTM
+ unit中有许多其他门控（包括遗忘门、记忆门等），以一种非常特殊的方式进行交互。这四个门控是：
+\end_layout
+
+\begin_layout Enumerate
+Input gate (current cell matters)
+\end_layout
+
+\begin_layout Enumerate
+Forget (gate 0, forget past)
+\end_layout
+
+\begin_layout Enumerate
+Output (how much cell is exposed)
+\end_layout
+
+\begin_layout Enumerate
+New memory cell
+\end_layout
+
+\begin_layout Standard
+对应的四个门控的输出是：
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename fig3.png
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+此时，LSTM Unit的示意图为下图，从左至右分别为Input gate, forget, new memory cell, 以及output。
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename fig4.png
+	scale 45
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+noindent
+\end_layout
+
+\end_inset
+
+ 因此，最后的两个输出分别为：
+\end_layout
+
+\begin_layout Enumerate
+Final memory cell（位于上方的）
+\end_layout
+
+\begin_layout Enumerate
+Final hidden state （位于下方和h_t).
+\end_layout
+
+\begin_layout Standard
+对应的公式分别为：
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename fig5.png
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+GRU
+\end_layout
+
+\begin_layout Standard
+门控循环单元（Gated Recurrent Unit，GRU）网络是一种比LSTM网络更加简单的循环神经网络。与LSTM类似，都是在RNN上增加了不同的门控产
+生的高级的RNN。在LSTM网络中，输入门和遗忘门是互补关系，用两个门比较冗余。GRU将输 入门与和遗忘门合并成一个门：更新门。同时，GRU也不引入额外的记忆单
+元， 直接在当前状态
+\begin_inset Formula $h_{t}$
+\end_inset
+
+ 和历史状态
+\begin_inset Formula $h_{t-1}$
+\end_inset
+
+ 之间引入线性依赖关系。GRU有三个门：
+\end_layout
+
+\begin_layout Enumerate
+Update gate
+\end_layout
+
+\begin_layout Enumerate
+Reset Gate
+\end_layout
+
+\begin_layout Enumerate
+New memory content.
+\end_layout
+
+\begin_layout Standard
+三个门控分别对应的输出是：
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename fig6.png
 	scale 50
 
 \end_inset
@@ -165,109 +381,18 @@ Background
 \end_layout
 
 \begin_layout Standard
-这是利用算法前的直方图：
-\end_layout
-
-\begin_layout Standard
-\align center
-\begin_inset Graphics
-	filename pasted3.png
-	scale 50
-
+这样，我们得到新的
+\begin_inset Formula $h_{t}$
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
-利用算法之后的直方图：
+是：
 \end_layout
 
 \begin_layout Standard
 \align center
 \begin_inset Graphics
-	filename pasted4.png
-	scale 50
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-可以看到直方图更加的均衡。差异图如图所示：
-\end_layout
-
-\begin_layout Standard
-\align center
-\begin_inset Graphics
-	filename pasted5.png
-	scale 70
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Section*
-Problem 2
-\end_layout
-
-\begin_layout Standard
-问题：Python编程实现线性插值算法（不能调用某个算法库里面的插值函数）；读出一幅图像，利用线性插值把图片空间分辨率放大或缩小N倍，保存图片。
-\end_layout
-
-\begin_layout Standard
-解答：我们利用双线性插值法，利用复旦大学子彬院的照片作为样例。放大缩小的图放在了文件夹中。
-\end_layout
-
-\begin_layout Section*
-Problem 3
-\end_layout
-
-\begin_layout Standard
-问题：Python编程实现在二维图片上画出等值线/等高线（不能调用某个算法库里面的等值线函数）；应用：输入原始图片（如JPG、PNG格式）和显示等值线数值或数量
-参数，输出带有等值线/等高线的图片。备注：这题关注的是等值线的计算，而不是平均分布的多条等高线，作业应该是给出一个图像的灰度值，计算给定值（如C=200或0.5）
-的等值线。
-\end_layout
-
-\begin_layout Standard
-解答：我们采用像素点的灰度值的大小来寻找对应的值，再利用一次线性插值标记出需要寻找的灰度值的坐标。最后利用plot画图标注出，我们以Emma Watson为例子
-。
-\end_layout
-
-\begin_layout Standard
-这是Emma Waston 照片上100灰度值的等高线图：
-\end_layout
-
-\begin_layout Standard
-\align center
-\begin_inset Graphics
-	filename pasted6.png
-	scale 40
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Section*
-Problem 4
-\end_layout
-
-\begin_layout Standard
-问题: Python编程实现强化边界滤波算法代码（不能调用某个算法库里面的函数）；并应用一张图片上，显示与原图的对比差别。
-\end_layout
-
-\begin_layout Standard
-解答：我们利用拉普拉斯滤波来实现强化边界滤波算法。效果如图：我们会发现，Emma Watson的轮廓本很好的显示了出来。
-\end_layout
-
-\begin_layout Standard
-\align center
-\begin_inset Graphics
-	filename pasted1.png
-	scale 50
+	filename fig7.png
+	scale 60
 
 \end_inset
 

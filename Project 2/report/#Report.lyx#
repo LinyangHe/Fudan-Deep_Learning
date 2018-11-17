@@ -134,7 +134,7 @@ Linyang He
 
 \begin_layout Standard
 本文以写唐诗这个情景为例，重点关注了RNN模型（以及LSTM,GRU模型）在时间序列问题上的应用。本文先会讲述各个RNN模型，再描述了唐诗生成的过程。接着展示了
-以“日 、 红 、 山 、 夜 、 湖、 海 、 月”等字为首字的诗歌。最后是实验的总结。
+以“日 、 红 、 山 、 夜 、 湖、 海 、 月”等字为首字的诗歌。最后是实验的总结，并提出了一些自己的思考。
 \end_layout
 
 \begin_layout Section
@@ -148,13 +148,147 @@ RNN
 \begin_layout Standard
 当我们在理解一句话意思时，孤立的理解这句话的每个词是不够的，我们需要处理这些词连接起来的整个序列。为了解决一些这样类似的问题，能够更好的处理序列的信息，RNN就
 诞生了。递归神经网络（Recurrent Neural Networks，RNN）对于时序信息的处理有着天然的优异性。RNN的特点在于，会把上个时序的hidde
-n_state信息作为这个时序的输入，这样，就实现了不同时序上的信息的沟通。
+n_state信息作为这个时序的输入，这样，就实现了不同时序上的信息的沟通。下图是一个单独的RNN Unit示意图。
 \end_layout
 
 \begin_layout Standard
 \align center
 \begin_inset Graphics
-	filename pasted1.png
+	filename fig1.png
+	scale 20
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+可以发现，隐藏层中间有个w在循环的输入输出，这便是hidden_state。如果展开来看，可以得到如下图像，这也是平时我们常见的RNN图像。
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename fig2.png
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+具体而言，假设在时刻
+\begin_inset Formula $t$
+\end_inset
+
+时，网络的输入为
+\begin_inset Formula $x_{t}$
+\end_inset
+
+，隐层状态（即隐层神经元活性值）为
+\begin_inset Formula $h_{t}$
+\end_inset
+
+ 不仅和当前时刻的输入
+\begin_inset Formula $x_{t}$
+\end_inset
+
+ 相关，也和上一个时刻的隐层状态
+\begin_inset Formula $h_{t-1}$
+\end_inset
+
+ 相关。 
+\begin_inset Formula $f(·)$
+\end_inset
+
+是非线性激活函数，通常为logistic函数或tanh 函数，
+\begin_inset Formula $U$
+\end_inset
+
+ 为状态-状态权重矩阵，
+\begin_inset Formula $W$
+\end_inset
+
+ 为状态-输入权重矩阵, 那么，RNN的运算逻辑通常可以表示成：
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$$h_t = f(Wx_t + Uh_{t−1})$$
+\end_layout
+
+\end_inset
+
+.
+ 总之，链式的特征揭示了 RNN 本质上是与序列和列表相关的。他们是对于这类数据的最自然的神经网络架构。
+\end_layout
+
+\begin_layout Subsection
+LSTM
+\end_layout
+
+\begin_layout Standard
+RNN 的关键点之一就是他们可以用来连接先前的信息到当前的任务上，例如使用过去的视频段来推测对当前段的理解。如果 RNN 可以做到这个，他们就变得非常有用。但是
+真的可以么？答案是，还有很多依赖因素。 有时候，我们仅仅需要知道先前的信息来执行当前的任务。例如，我们有一个语言模型用来基于先前的词来预测下一个词。如果我们试着
+预测 “the clouds are in the sky” 最后的词，我们并不需要任何其他的上下文 —— 因此下一个词很显然就应该是 sky。在这样的场景中，
+相关的信息和预测的词位置之间的间隔是非常小的，RNN 可以学会使用先前的信息。
+\end_layout
+
+\begin_layout Standard
+但是同样会有一些更加复杂的场景。假设我们试着去预测“I grew up in France...
+ I speak fluent French”最后的词。当前的信息建议下一个词可能是一种语言的名字，但是如果我们需要弄清楚是什么语言，我们是需要先前提到的离当前
+位置很远的 France 的上下文的。这说明相关信息和当前预测位置之间的间隔就肯定变得相当的大。 不幸的是，在这个间隔不断增大时，RNN 会丧失学习到连接如此远
+的信息的能力。在理论上，RNN 绝对可以处理这样的 长期依赖 问题。人们可以仔细挑选参数来解决这类问题中的最初级形式，但在实践中，RNN 肯定不能够成功学习到这
+些知识。Bengio, et al.
+ (1994)等人对该问题进行了深入的研究，他们发现一些使训练 RNN 变得非常困难的相当根本的原因。 然而，幸运的是，LSTM 并没有这个问题。
+\end_layout
+
+\begin_layout Standard
+LSTM是一种 RNN 特殊的类型，可以学习长期依赖信息。LSTM 通过刻意的设计来避免长期依赖问题。不同于普通RNN的单一神经网络层，LSTM
+ unit中有许多其他门控（包括遗忘门、记忆门等），以一种非常特殊的方式进行交互。这四个门控是：
+\end_layout
+
+\begin_layout Enumerate
+Input gate (current cell matters)
+\end_layout
+
+\begin_layout Enumerate
+Forget (gate 0, forget past)
+\end_layout
+
+\begin_layout Enumerate
+Output (how much cell is exposed)
+\end_layout
+
+\begin_layout Enumerate
+New memory cell
+\end_layout
+
+\begin_layout Standard
+对应的四个门控的输出是：
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename fig3.png
+	scale 65
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+此时，LSTM Unit的示意图为下图，从左至右分别为
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename fig4.png
 	scale 50
 
 \end_inset
