@@ -147,7 +147,19 @@ RNN
 
 \begin_layout Standard
 当我们在理解一句话意思时，孤立的理解这句话的每个词是不够的，我们需要处理这些词连接起来的整个序列。为了解决一些这样类似的问题，能够更好的处理序列的信息，RNN就
-诞生了。
+诞生了。递归神经网络（Recurrent Neural Networks，RNN）对于时序信息的处理有着天然的优异性。RNN的特点在于，会把上个时序的hidde
+n_state信息作为这个时序的输入，这样，就实现了不同时序上的信息的沟通。
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Graphics
+	filename pasted1.png
+	scale 50
+
+\end_inset
+
+
 \end_layout
 
 \end_body
