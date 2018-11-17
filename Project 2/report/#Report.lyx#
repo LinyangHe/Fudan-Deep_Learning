@@ -468,7 +468,250 @@ Peom Generation
 \end_layout
 
 \begin_layout Standard
-经过对函数process_poems的分析，我们可以得处三个返回值poems_vector, word_int_map, words分别是存这
+经过对函数process_poems的分析，我们可以得处三个返回值poems_vector, word_int_map, words分别为：存着诗（字符串）的v
+ector索引集；每个字和索引的字典；诗歌语料库中出现的所有的字。
+\end_layout
+
+\begin_layout Subsubsection
+rnn_lstm model
+\end_layout
+
+\begin_layout Standard
+这部分代码定义了我们的RNN模型，我们使用的是MultiRNNCell，表示我们的模型是多层RNN堆叠而成的。同时，我们利用的是dynamic_rnn得到输出，
+说明有多个时序被同时计算，这样提升了模型的训练效率。
+\end_layout
+
+\begin_layout Subsubsection
+训练模型部分
+\end_layout
+
+\begin_layout Standard
+这部分代码是清晰易懂的。唯一个值得关注的点是该程序将参数保存checkpoint中。如果训练被中断了，下次训练时可以直接从中断部分继续实验，极大地提升了效率。
+\end_layout
+
+\begin_layout Subsubsection
+生成诗歌部分
+\end_layout
+
+\begin_layout Standard
+2.2.3在代码上是训练模型，而生成诗歌则是验证模型。此外，要注意我们需要导入已经训练好的模型。注意如果需要训练好的参数能够成功导入，那么就要让网络模型等和训练的时
+候的一致。而具体到诗歌生成，原理其实很简单，此时，实际上利用的就是语言模型的思想，给出一个begin_word，利用神经语言模型，预测出最可能的下一个word，
+以此类推直到遇到了end_token为止，而这些预测出来的word组合起来也就是所谓的唐诗了。
+\end_layout
+
+\begin_layout Subsubsection
+主函数
+\end_layout
+
+\begin_layout Standard
+将上述的代码组合起来，按照预处理、训练、验证的流程进行实现。
+\end_layout
+
+\begin_layout Section
+Result
+\end_layout
+
+\begin_layout Standard
+本次实验中，我们训练了三个模型，情况如下：
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="4" columns="4">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+模型
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+learning_rate
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+epochs
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+training_loss
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+A
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.01
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+50
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\text{≈}$
+\end_inset
+
+4
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+B
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.001
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+32
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $≈$
+\end_inset
+
+3.5
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+C
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.001
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+112
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $≈$
+\end_inset
+
+3
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+对于模型A，我们生成的诗歌分别如下：
+\end_layout
+
+\begin_layout Standard
+对于模型B，生成的诗歌如图：
 \end_layout
 
 \end_body

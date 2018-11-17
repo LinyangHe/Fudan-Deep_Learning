@@ -469,7 +469,7 @@ Peom Generation
 
 \begin_layout Standard
 经过对函数process_poems的分析，我们可以得处三个返回值poems_vector, word_int_map, words分别为：存着诗（字符串）的v
-ector索引集；每个字和索引的字典；以及出现的所有的字。
+ector索引集；每个字和索引的字典；诗歌语料库中出现的所有的字。
 \end_layout
 
 \begin_layout Subsubsection
@@ -478,7 +478,7 @@ rnn_lstm model
 
 \begin_layout Standard
 这部分代码定义了我们的RNN模型，我们使用的是MultiRNNCell，表示我们的模型是多层RNN堆叠而成的。同时，我们利用的是dynamic_rnn得到输出，
-说明有多个时序。
+说明有多个时序被同时计算，这样提升了模型的训练效率。
 \end_layout
 
 \begin_layout Subsubsection
@@ -486,7 +486,7 @@ rnn_lstm model
 \end_layout
 
 \begin_layout Standard
-这部分代码是清晰易懂的。一个值得关注的点是该程序将参数保存checkpoint中。如果训练被中断了，下次训练时可以直接从中断部分继续实验，极大地提升了效率。
+这部分代码是清晰易懂的。唯一个值得关注的点是该程序将参数保存checkpoint中。如果训练被中断了，下次训练时可以直接从中断部分继续实验，极大地提升了效率。
 \end_layout
 
 \begin_layout Subsubsection
@@ -497,6 +497,428 @@ rnn_lstm model
 2.2.3在代码上是训练模型，而生成诗歌则是验证模型。此外，要注意我们需要导入已经训练好的模型。注意如果需要训练好的参数能够成功导入，那么就要让网络模型等和训练的时
 候的一致。而具体到诗歌生成，原理其实很简单，此时，实际上利用的就是语言模型的思想，给出一个begin_word，利用神经语言模型，预测出最可能的下一个word，
 以此类推直到遇到了end_token为止，而这些预测出来的word组合起来也就是所谓的唐诗了。
+\end_layout
+
+\begin_layout Subsubsection
+主函数
+\end_layout
+
+\begin_layout Standard
+将上述的代码组合起来，按照预处理、训练、验证的流程进行实现。
+\end_layout
+
+\begin_layout Section
+Result
+\end_layout
+
+\begin_layout Standard
+本次实验中，我们训练了三个模型，情况如下，其中trraning_loss是最后一次迭代的值。
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="4" columns="5">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+模型
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+learning_rate
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+epochs
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+training_loss
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RNN
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+A
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.01
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+50
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4.11
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+LSTM
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+B
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.001
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+112
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.73
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+LSTM
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+C
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.001
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+32
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.52
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+LSTM
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+生成的诗歌分别为：
+\end_layout
+
+\begin_layout Standard
+\align left
+\begin_inset Tabular
+<lyxtabular version="3" rows="2" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+A
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+B
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+C
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename fig10.png
+	scale 60
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename fig11.png
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename fig12.png
+	scale 60
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename fig13.png
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename fig14.png
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+结果分析：
+\end_layout
+
+\begin_layout Enumerate
+我们发现在同样取learning_rate为0.001的时候，epoch多了之后，反而training_loss变高，这说明本身这个模型可能设计的就不太好，导致不
+能完全收敛到全局最优解。
+\end_layout
+
+\begin_layout Enumerate
+总体上而言，当training_loss变小之后，生成的诗歌的句子的长度也减小了。这说明神经语言模型得到了一定的提升，语言模型会较早的发现end_token，而
+不会陷入生成很多很长且没有多少道理的诗句。
+\end_layout
+
+\begin_layout Standard
+这些诗句中，还是有一些比较惊艳的，这里摘录出来，以飧读者：
+\end_layout
+
+\begin_layout Itemize
+何当见君子，不见白头翁。
+\end_layout
+
+\begin_layout Itemize
+日暮花如雪，春风入夜深。
+\end_layout
+
+\begin_layout Itemize
+云门春色上，花落一枝香。
+\end_layout
+
+\begin_layout Itemize
+莫问东风景，何人更有期。
+\end_layout
+
+\begin_layout Itemize
+海上山头白，春风吹雨声。
+\end_layout
+
+\begin_layout Itemize
+归来不可见，日暮一声风。
+\end_layout
+
+\begin_layout Itemize
+欲待春光里，还随白露姿。
+\end_layout
+
+\begin_layout Itemize
+相逢不可见，何处有残阳。
+\end_layout
+
+\begin_layout Section
+Others
+\end_layout
+
+\begin_layout Standard
+对唐诗生成这个任务的一些思考：
+\end_layout
+
+\begin_layout Enumerate
+本文对字的嵌入是将所有的字编号来了个索引，但是字与字之前在语义上的相似性，并没有通过这个编号本身表现出来。如果换作是Chinese Character的embe
+dding向量，效果会不会更好一些。利用word2vec的原理，只不过这里的word是每一个字。然后还是用这个古诗的语料库进行训练。
+\end_layout
+
+\begin_layout Enumerate
+本文的方法基本指利用了语言模型，我们知道古诗词有严格的韵脚、对仗等限制，未来也许可以添加这些条件，让诗歌看起来更工整。
+\end_layout
+
+\begin_layout Enumerate
+一般而言，生成任务都有一些evaluation来评测我们的模型是好是坏，但是在诗歌生成的案例中，似乎并没有这样的一个评判方法。可否考虑大量的人工评分数据作为ev
+aluation值得思考。艺术作品的好与坏，事实上，是很难用机器去定量评价的。艺术本就闪耀着人性的光辉，人性的东西应该回归由人性自身去评价，
 \end_layout
 
 \end_body
