@@ -2,7 +2,7 @@ import numpy as np
 
 ##################
 # ???
-# from model import Pointer_network
+from model import Pointer_network
 # ???
 ####################
 import torch
@@ -12,7 +12,8 @@ MAX_EPOCH = 100000
 #############################
 #?????   construct your model
 
-# model = Pointer_network(     )
+
+model = Pointer_network(     )
 
 #?????
 #############################
