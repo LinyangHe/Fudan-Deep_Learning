@@ -1,4 +1,4 @@
-# python: 2.7
+# python: 3.7
 # encoding: utf-8
 
 import numpy as np
@@ -32,7 +32,7 @@ if __name__ == '__main__':
     mnist = np.load('mnist_bin.npy')  # 60000x28x28
     n_imgs, n_rows, n_cols = mnist.shape
     img_size = n_rows * n_cols
-    print mnist.shape
+    print (mnist.shape)
 
     # construct rbm model
     rbm = RBM(2, img_size)
