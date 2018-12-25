@@ -89,7 +89,7 @@ if __name__ == '__main__':
     raw_data = torchvision.datasets.MNIST(
         root='./mnist/',
         train=True,                                     # this is training data
-        download=False,                 # set it to True to download it if you don't have it
+        download=True,                 # set it to True to download it if you don't have it
     )
     mnist = raw_data.train_data.numpy() / 255.0  # (60000, 28, 28)
     n_imgs, n_rows, n_cols = mnist.shape
@@ -97,8 +97,14 @@ if __name__ == '__main__':
     print(mnist.shape)
 
     # construct rbm model
-    rbm = RBM(100, img_size)
+    n_hidden = 300
+    rbm = RBM(n_hidden, img_size)
     # train rbm model using mnist
     rbm.train(mnist)
     # sample from rbm model and plot
     plot()
+    plt.figure()
+    plt.title('loss, n_hidden = '+str(n_hidden))
+    plt.plot(losses)
+    plt.show()
+
