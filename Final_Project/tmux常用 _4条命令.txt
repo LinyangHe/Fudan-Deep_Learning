@@ -3,7 +3,7 @@
 
 下面讲 4条常用命令
 
-tmux a -t mysession  创建名为mysession的会话 ，自己指定一个名字，后面链接需要用这个名字，别人不会 误进入你的 session，因为需要输入 正确的名字。尽量使用自己的中文或英文名缩写加数字，方便以后大家查找用 会话名字。一个人可以打开多个session,不用的session可以关掉, ctrl+d 直接关掉当前session.
+tmux new -s mysession  创建名为mysession的会话 ，自己指定一个名字，后面链接需要用这个名字，别人不会 误进入你的 session，因为需要输入 正确的名字。尽量使用自己的中文或英文名缩写加数字，方便以后大家查找用 会话名字。一个人可以打开多个session,不用的session可以关掉, ctrl+d 直接关掉当前session.
 
 tmux a -t mysession　　连接指定会话 ,链接的时候 需要上面设定的名字
 
